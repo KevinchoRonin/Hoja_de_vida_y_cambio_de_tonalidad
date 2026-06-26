@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kevin Jeanpierre Barreto | Tech Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"] {
+    --bg-primary: #050A14;
+    --bg-secondary: #0A1628;
+    --bg-card: #0D1F3C;
+    --neon-cyan: #00F5FF;
+    --neon-blue: #0080FF;
+    --neon-purple: #8000FF;
+    --neon-green: #00FF88;
+    --text-primary: #E0F4FF;
+    --text-secondary: #7AAFCC;
+    --text-muted: #3A6A8A;
+    --border-color: rgba(0,245,255,0.15);
+    --glow-cyan: 0 0 20px rgba(0,245,255,0.5), 0 0 40px rgba(0,245,255,0.2);
+    --glow-blue: 0 0 20px rgba(0,128,255,0.5);
+    --glow-green: 0 0 20px rgba(0,255,136,0.5);
+    --scanline: rgba(0,245,255,0.03);
+    --mode-btn-bg: #0D1F3C;
+    --mode-icon: "☀️";
+  }
+  :root[data-theme="light"] {
+    --bg-primary: #F0F8FF;
+    --bg-secondary: #E0EFFF;
+    --bg-card: #FFFFFF;
+    --neon-cyan: #0066AA;
+    --neon-blue: #0044CC;
+    --neon-purple: #5500CC;
+    --neon-green: #007744;
+    --text-primary: #0A1628;
+    --text-secondary: #224466;
+    --text-muted: #6699BB;
+    --border-color: rgba(0,100,200,0.2);
+    --glow-cyan: 0 4px 20px rgba(0,100,200,0.2);
+    --glow-blue: 0 4px 15px rgba(0,68,204,0.15);
+    --glow-green: 0 4px 15px rgba(0,119,68,0.15);
+    --scanline: transparent;
+    --mode-btn-bg: #E0EFFF;
+    --mode-icon: "🌙";
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: all 0.4s ease;
+    overflow-x: hidden;
+  }
+
+  /* SCANLINES EFFECT - dark mode only */
+  [data-theme="dark"] body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      var(--scanline) 0px,
+      var(--scanline) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* GRID BACKGROUND */
+  [data-theme="dark"] body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* THEME TOGGLE */
+  .theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--neon-cyan);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    box-shadow: var(--glow-cyan);
+    letter-spacing: 1px;
+  }
+  .theme-toggle:hover { transform: scale(1.05); }
+  .toggle-track {
+    width: 36px; height: 18px;
+    background: var(--bg-secondary);
+    border-radius: 9px;
+    border: 1px solid var(--neon-cyan);
+    position: relative;
+    transition: all 0.3s;
+  }
+  .toggle-thumb {
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+    transition: all 0.3s;
+    box-shadow: 0 0 6px var(--neon-cyan);
+  }
+  [data-theme="light"] .toggle-thumb { left: 20px; background: var(--neon-blue); box-shadow: 0 0 6px var(--neon-blue); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  [data-theme="dark"] .hero::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,128,255,0.08) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--neon-green);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+
+  .hero-name {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.2rem, 6vw, 5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-blue) 50%, var(--neon-purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  [data-theme="dark"] .hero-name {
+    text-shadow: none;
+    filter: drop-shadow(0 0 20px rgba(0,245,255,0.4));
+  }
+
+  .hero-id {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    margin-bottom: 24px;
+  }
+
+  .hero-title {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+    margin-bottom: 32px;
+    text-transform: uppercase;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 5px 14px;
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    border-radius: 2px;
+    letter-spacing: 2px;
+    background: rgba(0,245,255,0.05);
+    transition: all 0.3s;
+  }
+  [data-theme="light"] .tag { background: rgba(0,100,200,0.08); }
+  .tag:hover { background: rgba(0,245,255,0.15); box-shadow: var(--glow-cyan); }
+
+  .hero-photo-wrapper {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    border: 2px solid var(--neon-cyan);
+    padding: 4px;
+    margin-bottom: 32px;
+    box-shadow: var(--glow-cyan);
+    position: relative;
+    animation: rotate-border 8s linear infinite;
+  }
+
+  @keyframes rotate-border {
+    0% { box-shadow: 0 0 20px rgba(0,245,255,0.5), 0 0 40px rgba(0,128,255,0.2); }
+    50% { box-shadow: 0 0 30px rgba(0,128,255,0.7), 0 0 60px rgba(128,0,255,0.3); }
+    100% { box-shadow: 0 0 20px rgba(0,245,255,0.5), 0 0 40px rgba(0,128,255,0.2); }
+  }
+
+  .hero-photo-wrapper img,
+  .hero-photo-placeholder {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hero-photo-placeholder {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--neon-cyan);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--neon-cyan), transparent);
+  }
+
+  /* SECTIONS */
+  .section {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--neon-green);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--neon-green);
+    opacity: 0.4;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.6rem, 3vw, 2.5rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 48px;
+    letter-spacing: 2px;
+  }
+
+  /* SOBRE MI */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  @media (max-width: 700px) { .about-grid { grid-template-columns: 1fr; } }
+
+  .about-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-blue));
+  }
+
+  .stat-card:hover { transform: translateY(-4px); box-shadow: var(--glow-cyan); }
+
+  .stat-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--neon-cyan);
+    display: block;
+  }
+
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .skill-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 28px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-block::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+
+  .skill-block:hover::after { transform: scaleX(1); }
+  .skill-block:hover { box-shadow: var(--glow-blue); transform: translateY(-4px); }
+
+  .skill-block-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    color: var(--neon-cyan);
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .skill-icon { font-size: 1.2rem; }
+
+  .skill-list { list-style: none; }
+
+  .skill-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .skill-list li:last-child { border-bottom: none; }
+  .skill-list li:hover { color: var(--text-primary); }
+
+  .skill-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+    flex-shrink: 0;
+    box-shadow: 0 0 6px var(--neon-cyan);
+  }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--neon-cyan), var(--neon-purple), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -28px; top: 6px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+    box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+    border: 2px solid var(--bg-primary);
+  }
+
+  .timeline-date {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--neon-green);
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+  }
+
+  .timeline-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+
+  .timeline-org {
+    font-size: 0.9rem;
+    color: var(--neon-cyan);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .timeline-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  .project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 28px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
+  }
+
+  .project-card:hover { transform: translateY(-6px); box-shadow: var(--glow-green); }
+
+  .project-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--border-color);
+    line-height: 1;
+    margin-bottom: 12px;
+    transition: color 0.3s;
+  }
+
+  .project-card:hover .project-number { color: rgba(0,245,255,0.2); }
+
+  .project-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+
+  .project-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tech-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border: 1px solid var(--neon-purple);
+    color: var(--neon-purple);
+    border-radius: 2px;
+    letter-spacing: 1px;
+    background: rgba(128,0,255,0.05);
+  }
+
+  [data-theme="light"] .tech-badge { background: rgba(85,0,204,0.06); }
+
+  /* CERTS */
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .cert-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 20px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .cert-card:hover { box-shadow: var(--glow-blue); transform: translateX(4px); }
+
+  .cert-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .cert-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .cert-org {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--neon-cyan);
+    letter-spacing: 2px;
+  }
+
+  /* HOBBIES */
+  .hobbies-section {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .hobbies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+  }
+
+  .hobby-item {
+    text-align: center;
+    padding: 28px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-card);
+    transition: all 0.3s;
+  }
+
+  .hobby-item:hover { transform: translateY(-6px); box-shadow: var(--glow-cyan); border-color: var(--neon-cyan); }
+
+  .hobby-emoji { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+
+  .hobby-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    color: var(--neon-cyan);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .hobby-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* CONTACT */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .contact-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .contact-item:hover { box-shadow: var(--glow-cyan); transform: translateY(-4px); border-color: var(--neon-cyan); }
+
+  .contact-icon {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--neon-cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    background: rgba(0,245,255,0.05);
+  }
+
+  [data-theme="light"] .contact-icon { background: rgba(0,100,200,0.06); }
+
+  .contact-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .contact-value {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    word-break: break-all;
+  }
+
+  /* REFERENCES */
+  .refs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .ref-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 24px;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .ref-card::before {
+    content: '"';
+    position: absolute;
+    top: -10px; left: 20px;
+    font-size: 4rem;
+    color: var(--neon-cyan);
+    opacity: 0.15;
+    font-family: serif;
+    line-height: 1;
+  }
+
+  .ref-card:hover { box-shadow: var(--glow-blue); }
+
+  .ref-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+
+  .ref-role {
+    font-size: 0.85rem;
+    color: var(--neon-cyan);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .ref-contact {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  /* DIVIDER */
+  .neon-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-blue), transparent);
+    opacity: 0.3;
+    margin: 0;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .footer-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+  }
+
+  .footer-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    color: var(--neon-cyan);
+    letter-spacing: 3px;
+    margin-top: 8px;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 16px;
+    background: rgba(5,10,20,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  [data-theme="light"] nav {
+    background: rgba(240,248,255,0.9);
+  }
+
+  .nav-link {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 2px;
+    padding: 5px 10px;
+    border-radius: 2px;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .nav-link:hover { color: var(--neon-cyan); background: rgba(0,245,255,0.05); }
+
+  /* GLITCH EFFECT on hero name hover */
+  @keyframes glitch {
+    0%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+    20% { clip-path: inset(30% 0 50% 0); transform: translate(-4px, 2px); }
+    40% { clip-path: inset(70% 0 10% 0); transform: translate(4px, -2px); }
+    60% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, 4px); }
+    80% { clip-path: inset(50% 0 30% 0); transform: translate(2px, -4px); }
+  }
+
+  .hero-name:hover::before,
+  .hero-name:hover::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-blue) 50%, var(--neon-purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  [data-theme="dark"] .hero-name:hover::before {
+    animation: glitch 0.3s steps(1) infinite;
+    color: var(--neon-cyan);
+  }
+
+  [data-theme="dark"] .hero-name:hover::after {
+    animation: glitch 0.3s steps(1) infinite reverse;
+    color: var(--neon-purple);
+  }
+
+  .hero-name { position: relative; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#about" class="nav-link">Sobre mí</a>
+  <a href="#skills" class="nav-link">Skills</a>
+  <a href="#education" class="nav-link">Educación</a>
+  <a href="#projects" class="nav-link">Proyectos</a>
+  <a href="#certs" class="nav-link">Certs</a>
+  <a href="#contact" class="nav-link">Contacto</a>
+</nav>
+
+<!-- TOGGLE -->
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema">
+  <div class="toggle-track"><div class="toggle-thumb"></div></div>
+  <span id="toggle-label">MODO CLARO</span>
+</button>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">// PERFIL TECNOLÓGICO PROFESIONAL</p>
+  <div class="hero-photo-wrapper">
+    <img src="images/fotomia.png" alt="Kevin Barreto">
+</div>
+  <h1 class="hero-name" data-text="KEVIN JEANPIERRE BARRETO SOLANO">KEVIN JEANPIERRE<br>BARRETO SOLANO</h1>
+  <p class="hero-id">C.C. 1.012.330.306</p>
+  <p class="hero-title">Tecnólogo en Análisis y Desarrollo de Software</p>
+  <div class="hero-tags">
+    <span class="tag">HTML5 / CSS3</span>
+    <span class="tag">PYTHON</span>
+    <span class="tag">IoT</span>
+    <span class="tag">SENA · ADSO</span>
+    <span class="tag">CISCO CERTIFIED</span>
+  </div>
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- SOBRE MÍ -->
+<section class="section" id="about">
+  <p class="section-label">// 01 — IDENTIDAD</p>
+  <h2 class="section-title">SOBRE MÍ</h2>
+  <div class="about-grid">
+    <div>
+      <p class="about-text">
+        Aprendiz SENA del programa Tecnólogo en Análisis y Desarrollo de Software (ADSO), con formación en desarrollo web mediante HTML y CSS, conocimientos básicos en Python y fundamentos de Internet de las Cosas (IoT) orientados a la integración de software y dispositivos tecnológicos.
+      </p>
+      <br>
+      <p class="about-text">
+        Me caracterizo por ser una persona proactiva, responsable y con alta capacidad de aprendizaje, con habilidades para el trabajo en equipo y la resolución de problemas. Tengo interés en aplicar mis conocimientos en proyectos reales, aportar soluciones funcionales e innovadoras y fortalecer mis competencias en desarrollo de software, automatización y tecnologías emergentes dentro de un entorno empresarial.
+      </p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-card">
+        <span class="stat-number">4+</span>
+        <span class="stat-label">Certificaciones</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">2025</span>
+        <span class="stat-label">Graduación</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">IoT</span>
+        <span class="stat-label">Especialidad</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">SENA</span>
+        <span class="stat-label">Institución</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- SKILLS -->
+<section class="section" id="skills">
+  <p class="section-label">// 02 — ARSENAL TÉCNICO</p>
+  <h2 class="section-title">HABILIDADES</h2>
+  <div class="skills-grid">
+    <div class="skill-block">
+      <div class="skill-block-title"><span class="skill-icon">💻</span> TÉCNICAS · SOFTWARE</div>
+      <ul class="skill-list">
+        <li><span class="skill-dot"></span>Desarrollo web básico con HTML5 y CSS3</li>
+        <li><span class="skill-dot"></span>Conocimientos básicos en Python</li>
+        <li><span class="skill-dot"></span>Principios de Internet de las Cosas (IoT)</li>
+        <li><span class="skill-dot"></span>Lógica de programación y resolución de problemas</li>
+        <li><span class="skill-dot"></span>Manejo básico de bases de datos</li>
+        <li><span class="skill-dot"></span>Análisis de requerimientos funcionales</li>
+      </ul>
+    </div>
+    <div class="skill-block">
+      <div class="skill-block-title"><span class="skill-icon">🔧</span> TÉCNICAS · HARDWARE</div>
+      <ul class="skill-list">
+        <li><span class="skill-dot"></span>Uso básico de herramientas ofimáticas y tecnológicas</li>
+        <li><span class="skill-dot"></span>Integración de software y dispositivos tecnológicos</li>
+        <li><span class="skill-dot"></span>Redes de comunicación de datos</li>
+        <li><span class="skill-dot"></span>Fundamentos de IoT y sensores</li>
+      </ul>
+    </div>
+    <div class="skill-block">
+      <div class="skill-block-title"><span class="skill-icon">🧠</span> HABILIDADES BLANDAS</div>
+      <ul class="skill-list">
+        <li><span class="skill-dot"></span>Aprendizaje rápido y continuo</li>
+        <li><span class="skill-dot"></span>Trabajo en equipo y colaboración</li>
+        <li><span class="skill-dot"></span>Responsabilidad y compromiso</li>
+        <li><span class="skill-dot"></span>Comunicación asertiva</li>
+        <li><span class="skill-dot"></span>Proactividad e iniciativa</li>
+        <li><span class="skill-dot"></span>Adaptabilidad a nuevos entornos</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- EDUCACIÓN -->
+<section class="section" id="education">
+  <p class="section-label">// 03 — TRAYECTORIA FORMATIVA</p>
+  <h2 class="section-title">EDUCACIÓN</h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <p class="timeline-date">2025 — EN PROCESO</p>
+      <h3 class="timeline-title">TECNÓLOGO EN ANÁLISIS Y DESARROLLO DE SOFTWARE</h3>
+      <p class="timeline-org">SENA · ADSO</p>
+      <p class="timeline-desc">Programa de formación en desarrollo de software con énfasis en análisis, diseño e implementación de soluciones tecnológicas.</p>
+    </div>
+    <div class="timeline-item">
+      <p class="timeline-date">2023 — 2024</p>
+      <h3 class="timeline-title">ESPECIALIDAD: DESARROLLO DE SOFTWARE Y SOPORTE EN REDES</h3>
+      <p class="timeline-org">SENA · Comunicación de Datos</p>
+      <p class="timeline-desc">Especialización en desarrollo de software y soporte en redes de comunicación de datos.</p>
+    </div>
+    <div class="timeline-item">
+      <p class="timeline-date">2024</p>
+      <h3 class="timeline-title">BACHILLER TÉCNICO</h3>
+      <p class="timeline-org">Colegio Cedid San Pablo</p>
+      <p class="timeline-desc">Graduado con énfasis técnico, consolidando bases para la formación tecnológica.</p>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- PROYECTOS -->
+<section class="section" id="projects">
+  <p class="section-label">// 04 — LABORATORIO DE PROYECTOS</p>
+  <h2 class="section-title">PROYECTOS</h2>
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-number">01</div>
+      <h3 class="project-title">SISTEMA WEB ADSO</h3>
+      <p class="project-desc">Desarrollo de aplicación web como parte del programa ADSO en SENA, aplicando principios de diseño y desarrollo frontend.</p>
+      <div class="project-tech">
+        <span class="tech-badge">HTML5</span>
+        <span class="tech-badge">CSS3</span>
+        <span class="tech-badge">PYTHON</span>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-number">02</div>
+      <h3 class="project-title">PROYECTO IoT</h3>
+      <p class="project-desc">Integración de dispositivos tecnológicos y sensores orientados a la automatización, aplicando fundamentos de Internet de las Cosas.</p>
+      <div class="project-tech">
+        <span class="tech-badge">IoT</span>
+        <span class="tech-badge">SENSORES</span>
+        <span class="tech-badge">PYTHON</span>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-number">03</div>
+      <h3 class="project-title">ANÁLISIS DE REQUERIMIENTOS</h3>
+      <p class="project-desc">Levantamiento y documentación de requerimientos funcionales para soluciones de software en entorno académico-empresarial.</p>
+      <div class="project-tech">
+        <span class="tech-badge">ANÁLISIS</span>
+        <span class="tech-badge">DB</span>
+        <span class="tech-badge">DOCUMENTACIÓN</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- CERTIFICACIONES -->
+<section class="section" id="certs">
+  <p class="section-label">// 05 — CREDENCIALES</p>
+  <h2 class="section-title">CERTIFICACIONES</h2>
+  <div class="certs-grid">
+    <div class="cert-card">
+      <span class="cert-icon">🛡️</span>
+      <div>
+        <div class="cert-name">CSS Essentials</div>
+        <div class="cert-org">CISCO · 2025</div>
+      </div>
+    </div>
+    <div class="cert-card">
+      <span class="cert-icon">🐍</span>
+      <div>
+        <div class="cert-name">Fundamentos de Python 1</div>
+        <div class="cert-org">CISCO · 2025</div>
+      </div>
+    </div>
+    <div class="cert-card">
+      <span class="cert-icon">🌐</span>
+      <div>
+        <div class="cert-name">HTML Essentials</div>
+        <div class="cert-org">CISCO · 2025</div>
+      </div>
+    </div>
+    <div class="cert-card">
+      <span class="cert-icon">📡</span>
+      <div>
+        <div class="cert-name">Introduction to IoT</div>
+        <div class="cert-org">CISCO · 2022</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- HOBBIES -->
+<section class="hobbies-section">
+  <div class="section">
+    <p class="section-label">// 06 — MODO PERSONAL</p>
+    <h2 class="section-title">ACTIVIDADES & HOBBIES</h2>
+    <div class="hobbies-grid">
+      <div class="hobby-item">
+        <span class="hobby-emoji">💻</span>
+        <div class="hobby-title">PROGRAMACIÓN</div>
+        <p class="hobby-desc">Desarrollo de proyectos personales y exploración de nuevas tecnologías en tiempo libre.</p>
+      </div>
+      <div class="hobby-item">
+        <span class="hobby-emoji">🎮</span>
+        <div class="hobby-title">GAMING</div>
+        <p class="hobby-desc">Apasionado por los videojuegos, lo que fortalece pensamiento estratégico y resolución de problemas.</p>
+      </div>
+      <div class="hobby-item">
+        <span class="hobby-emoji">📚</span>
+        <div class="hobby-title">APRENDIZAJE</div>
+        <p class="hobby-desc">Consumo constante de contenido técnico: cursos online, documentación y tutoriales de tecnología.</p>
+      </div>
+      <div class="hobby-item">
+        <span class="hobby-emoji">🤖</span>
+        <div class="hobby-title">TECH & IA</div>
+        <p class="hobby-desc">Seguimiento activo de las últimas tendencias en inteligencia artificial e innovación tecnológica.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- CONTACTO -->
+<section class="section" id="contact">
+  <p class="section-label">// 07 — ESTABLECER CONEXIÓN</p>
+  <h2 class="section-title">CONTACTO</h2>
+  <div class="contact-grid">
+    <a class="contact-item" href="tel:3143085103">
+      <div class="contact-icon">📞</div>
+      <div>
+        <span class="contact-label">TELÉFONO</span>
+        <span class="contact-value">314 308 5103</span>
+      </div>
+    </a>
+    <a class="contact-item" href="mailto:kevinssjlol123@gmail.com">
+      <div class="contact-icon">✉️</div>
+      <div>
+        <span class="contact-label">EMAIL</span>
+        <span class="contact-value">kevinssjlol123@gmail.com</span>
+      </div>
+    </a>
+    <div class="contact-item">
+      <div class="contact-icon">📍</div>
+      <div>
+        <span class="contact-label">DIRECCIÓN</span>
+        <span class="contact-value">Cll 71c #79-21 sur</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-divider"></div>
+
+<!-- REFERENCIAS -->
+<section class="section">
+  <p class="section-label">// 08 — AVALES</p>
+  <h2 class="section-title">REFERENCIAS</h2>
+  <div class="refs-grid">
+    <div class="ref-card">
+      <div class="ref-name">YUDI ANGELICA MARTÍNEZ VILLANUEVA</div>
+      <div class="ref-role">Psicóloga · Líder equipo supervisión convenios cajas de compensación familiar · Secretaría Distrital de Integración Social</div>
+      <div class="ref-contact">📞 314 779 2304</div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-name">TATIANA HERNÁNDEZ BERROCAL</div>
+      <div class="ref-role">Médica Cirujana · Clínica Colsanitas</div>
+      <div class="ref-contact">📞 350 601 2719</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-text">// SISTEMA OPERATIVO — 2025</p>
+  <p class="footer-name">KEVIN JEANPIERRE BARRETO SOLANO</p>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const label = document.getElementById('toggle-label');
+    if (html.getAttribute('data-theme') === 'dark') {
+      html.setAttribute('data-theme', 'light');
+      label.textContent = 'MODO OSCURO';
+    } else {
+      html.setAttribute('data-theme', 'dark');
+      label.textContent = 'MODO CLARO';
+    }
+  }
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
